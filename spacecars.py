@@ -11,6 +11,22 @@ pygame.init()
 screen = pygame.display.set_mode(RESOLUTION)
 clock = pygame.time.Clock()
 
+#Add joysticks for cars
+try:
+    joy=pygame.joystick.Joystick(0)
+    joy.init()
+    print "Using Joystick 0" 
+except:
+    print "Joystick 0 not found!!"
+    
+try:
+    joy2=pygame.joystick.Joystick(1)
+    joy2.init()
+    print "Using Joystick 1"
+except:
+    print "Joystick 1 not found!!"
+    
+    
 # show introduction image
 background=pygame.image.load("presentation.png")
 background=pygame.transform.scale(background,RESOLUTION)
@@ -335,20 +351,62 @@ score2=StatusBar("Score",(255,0,0),0,(RESOLUTION[0]-100,20))
 while 1:
     # USER INPUT
     deltat = clock.tick(20)
+    
     for event in pygame.event.get():
-        if not hasattr(event, 'key'): continue
-        down = event.type == KEYDOWN
-        if event.key == K_RIGHT: car.k_right=down* -2
-        elif event.key == K_LEFT: car.k_left = down * 2
-        elif event.key == K_UP: car.k_up = down * -2
-        elif event.key == K_DOWN: car.k_down = down * 2
-        elif event.key == K_MINUS: car.hiper=1
-        elif event.key == K_s: car2.k_right=down* -2
-        elif event.key == K_a: car2.k_left = down * 2
-        elif event.key == K_w: car2.k_up = down * -2
-        elif event.key == K_z: car2.k_down = down * 2
-        elif event.key == K_x: car2.hiper=1
-        elif event.key == K_ESCAPE: sys.exit(0)
+        
+        if (hasattr(event, 'key') ):
+            
+           
+            down = event.type == KEYDOWN
+            
+            if event.key == K_RIGHT: car.k_right=down* -2
+            elif event.key == K_LEFT: car.k_left = down * 2
+            elif event.key == K_UP: car.k_up = down * -2
+            elif event.key == K_DOWN: car.k_down = down * 2
+            elif event.key == K_MINUS: car.hiper=1
+            elif event.key == K_s: car2.k_right=down* -2
+            elif event.key == K_a: car2.k_left = down * 2
+            elif event.key == K_w: car2.k_up = down * -2
+            elif event.key == K_z: car2.k_down = down * 2
+            elif event.key == K_x: car2.hiper=1
+            elif event.key == K_ESCAPE: sys.exit(0)
+            
+        if hasattr(event,'joy'):
+            #intercept joystick ID = 0
+            
+            if event.joy==0:
+           
+        
+                if (hasattr(event,'axis')):
+                    
+                    if int(event.value)==1 and event.axis==0 :car.k_right=-2
+                    elif int(event.value)==-1 and event.axis==0 :car.k_left=2
+                    elif int(event.value)==-1 and event.axis==1 :car.k_up=-2
+                    elif int(event.value)==1 and event.axis==1 :car.k_down=2
+                    elif int(event.value)==0 :car.k_right=car.k_left=car.k_up=car.k_down=0
+                    
+                    
+                                
+                if hasattr(event,'button'):
+                    if event.button==0 : car.hiper=1
+
+            #intercept joystick ID = 1
+            if event.joy==1:
+           
+        
+                if (hasattr(event,'axis')):
+                    if int(event.value)==1 and event.axis==0 :car2.k_right=-2
+                    elif int(event.value)==-1 and event.axis==0 :car2.k_left=2
+                    elif int(event.value)==-1 and event.axis==1 :car2.k_up=-2
+                    elif int(event.value)==1 and event.axis==1 :car2.k_down=2
+                    elif int(event.value)==0 :car2.k_right=car2.k_left=car2.k_up=car2.k_down=0
+            
+                    #print event.axis
+                                
+                if hasattr(event,'button'):
+                    if event.button==0 : car2.hiper=1
+    
+    
     # RENDERING
     
     
