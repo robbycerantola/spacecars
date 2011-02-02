@@ -44,16 +44,36 @@ while not done:
             done = True
 
 
-
+#load resources
 background=pygame.image.load("background.png")
 background=background.convert()
 screen.blit(background,(0,0))
 
+victory_sound=pygame.mixer.Sound("victory.wav")
 explosion_sound=pygame.mixer.Sound("bum.wav")
-sputnik=pygame.mixer.Sound("sputnik.wav")
+bell_sound=pygame.mixer.Sound("AGOGO.wav")
+sputnik=pygame.mixer.Sound("morse.wav")
 sputnik.play()
 
 font=pygame.font.Font(None,17)
+
+def winner(txt):
+	text = font.render(txt,True,(255,255,255),(159,182,205))
+        textRect=text.get_rect()
+        textRect.x=(RESOLUTION[0]/2)
+        textRect.y=(RESOLUTION[1]/2)
+        screen.blit(text,textRect) 
+        victory_sound.play()
+	pygame.display.flip()
+	done = False
+	while not done:
+	    for event in pygame.event.get():
+    		if (event.type == KEYUP) or (event.type == KEYDOWN):
+         	    if (event.key == K_SPACE):
+        		done = True
+			sys.exit()
+
+
 
 def load_sliced_sprites(w, h, filename):
     '''
@@ -175,8 +195,10 @@ class PadSprite(pygame.sprite.Sprite):
     def update(self, hit_list):
         
         if self in hit_list:
+            if self.image==self.normal:
+        	explosion_sound.play()
             self.image = self.hit
-            explosion_sound.play()
+            
             self.t += 1
         else: self.image = self.normal
         if self.t>15:
@@ -218,8 +240,10 @@ class AlienSprite(pygame.sprite.Sprite):
     def update(self, hit_list,subject):
         
         if self in hit_list:
+            if self.image==self.normal:
+        	bell_sound.play()
             self.image = self.hit
-                    
+            
             self.t += 1
         else: self.image = self.normal
         if self.t>8:
@@ -493,5 +517,11 @@ while 1:
         textRect.y=(RESOLUTION[1]/2)
         screen.blit(text,textRect)       
     
+    if car.score >=100:
+	winner('GREEN CAR WINS !!')
+    if car2.score >=100:
+	winner('RED CAR WINS!!')
+    	
+	    
     pygame.display.flip()
 
