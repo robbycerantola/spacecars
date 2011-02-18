@@ -1,11 +1,44 @@
 #! /usr/bin/env python
-# Need pygame 1.9.1
-# SPACECARS Written by Robby Cerantola 
+#  dependencies: pygame 1.9.1 
+# SPACECARS v1.1 Written by Robby Cerantola 
 # License is GPL 
 
-# INTIALISATION
+# INIT
 import pygame, math, sys,os, random
 from pygame.locals import *
+
+
+def play_music(music_file):
+    """
+    stream music with mixer.music module in blocking manner
+    this will stream the sound from disk while playing
+    """
+    clock = pygame.time.Clock()
+    try:
+        pygame.mixer.music.load(music_file)
+        print "Music file %s loaded!" % music_file
+    except pygame.error:
+        print "File %s not found! (%s)" % (music_file, pygame.get_error())
+        return
+    pygame.mixer.music.play()
+    #while pygame.mixer.music.get_busy():
+        # check if playback has finished
+     #   clock.tick(30)
+
+music_file = "music.mid"
+
+freq = 44100    # audio CD quality
+bitsize = -16   # unsigned 16 bit
+channels = 2    # 1 is mono, 2 is stereo
+buffer = 1024    # number of samples
+pygame.mixer.init(freq, bitsize, channels, buffer)
+
+# optional volume 0 to 1.0
+pygame.mixer.music.set_volume(0.8)
+
+
+
+
 RESOLUTION=(1024,768)
 pygame.init()
 screen = pygame.display.set_mode(RESOLUTION)
@@ -57,12 +90,16 @@ sputnik.play()
 
 font=pygame.font.Font(None,17)
 
+play_music(music_file)
+
+
 def winner(txt):
 	text = font.render(txt,True,(255,255,255),(159,182,205))
         textRect=text.get_rect()
         textRect.x=(RESOLUTION[0]/2)
         textRect.y=(RESOLUTION[1]/2)
-        screen.blit(text,textRect) 
+        screen.blit(text,textRect)
+        pygame.mixer.music.stop()
         victory_sound.play()
 	pygame.display.flip()
 	done = False
@@ -524,4 +561,8 @@ while 1:
     	
 	    
     pygame.display.flip()
+    
+    if not(pygame.mixer.music.get_busy()):
+        #print "Music loop start again...."
+        play_music(music_file)
 
